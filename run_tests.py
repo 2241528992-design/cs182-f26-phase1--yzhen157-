@@ -16,7 +16,14 @@ def run_test(command, expected_file, timeout=15):
         )
 
         if result.returncode != 0:
-            return "execution error"
+            error_message = result.stderr.decode(
+                "utf-8", errors="replace"
+            ).strip()
+
+            return (
+                f"execution error (exit code {result.returncode}): "
+                f"{error_message[-1000:]}"
+            )
 
         if result.stdout != expected_file.read_bytes():
             return "output mismatch"
